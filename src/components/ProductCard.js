@@ -25,9 +25,10 @@ const ProductCard = ({ product, className = '' }) => {
         <h3 className="card-title">{product.name}</h3>
         <p className="card-description">{product.description}</p>
         <p className="card-price">
+          ₱
           {typeof product.price === 'number'
-            ? `₱${product.price.toFixed(2)}`
-            : product.price}
+            ? product.price.toFixed(2)
+            : Number(product.price || 0).toFixed(2)}
         </p>
       </div>
     </Link>

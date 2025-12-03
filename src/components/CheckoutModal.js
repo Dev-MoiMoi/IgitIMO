@@ -1,34 +1,80 @@
-import React, { useState } from 'react';
-import { Modal, Button, Form, Row, Col, Image } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Modal, Button, Form, Image } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
+import API_BASE from '../config/api';
 
 const CheckoutModal = ({ show, onClose, items, onCheckoutComplete }) => {
-  const { isAuthenticated, setShowRoleModal } = useAuth();
+  const { isAuthenticated, user, setShowLoginModal } = useAuth();
+
   const [formData, setFormData] = useState({
     fullName: '',
     phoneNumber: '',
-    address: '',
+    region: '',
+    province: '',
+    city: '',
+    barangay: '',
     postalCode: '',
     street: '',
     isDefault: false,
     label: 'Home'
   });
 
-  const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+  // Autofill address when modal opens
+  useEffect(() => {
+    if (!show || !user) return;
+
+    axios.get(`${API_BASE}/user/address/default/${user.id}`)
+      .then(res => {
+        const data = res.data.address || res.data; // support both structures
+        if (data) {
+          setFormData({
+            fullName: data.full_name || '',
+            phoneNumber: data.phone_number || '',
+            region: data.region || '',
+            province: data.province || '',
+            city: data.city || '',
+            barangay: data.barangay || '',
+            postalCode: data.postal_code || '',
+            street: data.street_building_house || '',
+            isDefault: data.is_default || false,
+            label: data.label || 'Home'
+          });
+        }
+      })
+      .catch(err => console.error("Failed to load default address:", err));
+  }, [show, user]);
+
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!show) {
+      setFormData({
+        fullName: '',
+        phoneNumber: '',
+        region: '',
+        province: '',
+        city: '',
+        barangay: '',
+        postalCode: '',
+        street: '',
+        isDefault: false,
+        label: 'Home'
+      });
+    }
+  }, [show]);
+
+  const total = items
+    .reduce((acc, item) => acc + (Number(item.product?.price) || 0) * item.quantity, 0)
+    .toFixed(2);
 
   const handleLoginClick = () => {
     onClose();
-    setShowRoleModal(true);
+    setShowLoginModal(true);
   };
 
   const handlePlaceOrder = () => {
-    if (!isAuthenticated) {
-      // If not authenticated, maybe show an alert or open login
-      // Requirement: "if I try to check out the app should ask me to log in and the modal will popup"
-      handleLoginClick();
-      return;
-    }
-    onCheckoutComplete();
+    if (!isAuthenticated) return handleLoginClick();
+    onCheckoutComplete({ shippingAddress: formData });
   };
 
   return (
@@ -37,7 +83,6 @@ const CheckoutModal = ({ show, onClose, items, onCheckoutComplete }) => {
         <Modal.Title className="fw-bold">Checkout</Modal.Title>
       </Modal.Header>
       <Modal.Body className="px-5 pb-5">
-
         {!isAuthenticated && (
           <div className="d-flex justify-content-end align-items-center mb-4">
             <span className="me-2">Already have an account?</span>
@@ -45,68 +90,40 @@ const CheckoutModal = ({ show, onClose, items, onCheckoutComplete }) => {
           </div>
         )}
 
-        {/* Product List - Only show if authenticated or if we want to show it always? 
-            User image shows products in "logged out" view too. */}
         <div className="mb-4">
-          {items.map(item => (
-            <div key={item.id} className="d-flex align-items-center mb-3 p-2 border rounded bg-light">
-              <Image src={item.image} alt={item.name} style={{ width: '60px', height: '60px', objectFit: 'cover' }} className="rounded me-3" />
-              <div>
-                <div className="fw-bold">{item.name}</div>
-                <div className="text-muted small">₱{item.price}</div>
-                <div className="text-muted small">Quantity: {item.quantity}</div>
+          {items.map(item => {
+            const price = Number(item.product?.price) || 0;
+            return (
+              <div key={item.id} className="d-flex align-items-center mb-3 p-2 border rounded bg-light">
+                <Image 
+                  src={item.product?.image || "https://placehold.co/60x60?text=No+Image"} 
+                  alt={item.product?.name || "Product"} 
+                  style={{ width: '60px', height: '60px', objectFit: 'cover' }} 
+                  className="rounded me-3" 
+                />
+                <div>
+                  <div className="fw-bold">{item.product?.name}</div>
+                  <div className="text-muted small">₱{price.toFixed(2)}</div>
+                  <div className="text-muted small">Quantity: {item.quantity}</div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <h5 className="fw-bold mb-3">Shipping Address</h5>
         <Form>
-          <Form.Group className="mb-3">
-            <Form.Control
-              type="text"
-              placeholder="Full Name"
-              className="bg-light border-light py-2"
-              value={formData.fullName}
-              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Control
-              type="text"
-              placeholder="Phone Number"
-              className="bg-light border-light py-2"
-              value={formData.phoneNumber}
-              onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Control
-              type="text"
-              placeholder="Region, Province, City, Barangay"
-              className="bg-light border-light py-2"
-              value={formData.address}
-              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Control
-              type="text"
-              placeholder="Postal Code"
-              className="bg-light border-light py-2"
-              value={formData.postalCode}
-              onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Control
-              type="text"
-              placeholder="Street Name, Building, House No."
-              className="bg-light border-light py-2"
-              value={formData.street}
-              onChange={(e) => setFormData({ ...formData, street: e.target.value })}
-            />
-          </Form.Group>
+          {['fullName','phoneNumber','region','province','city','barangay','postalCode','street'].map(field => (
+            <Form.Group className="mb-3" key={field}>
+              <Form.Control
+                type="text"
+                placeholder={field.replace(/([A-Z])/g, ' $1').trim()}
+                className="bg-light border-light py-2"
+                value={formData[field]}
+                onChange={(e) => setFormData({ ...formData, [field]: e.target.value })}
+              />
+            </Form.Group>
+          ))}
 
           <div className="d-flex align-items-center mb-3">
             <Form.Check
@@ -140,7 +157,7 @@ const CheckoutModal = ({ show, onClose, items, onCheckoutComplete }) => {
           </div>
 
           <div className="d-flex justify-content-between align-items-center mt-5">
-            <div className="fs-5 fw-bold">Total <span className="ms-2">{total}</span></div>
+            <div className="fs-5 fw-bold">Total <span className="ms-2">₱{total}</span></div>
             <Button variant="dark" size="lg" className="px-4" onClick={handlePlaceOrder}>
               Place Order
             </Button>
@@ -152,3 +169,6 @@ const CheckoutModal = ({ show, onClose, items, onCheckoutComplete }) => {
 };
 
 export default CheckoutModal;
+
+
+

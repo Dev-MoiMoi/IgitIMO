@@ -1,0 +1,18 @@
+[
+  {
+    "id": 101,
+    "name": "Sample Cake A",
+    "price": 9.99,
+    "description": "A small test cake",
+    "image": "/Products/IGIT Cake Top View.png",
+    "stock": 5
+  },
+  {
+    "id": 102,
+    "name": "Sample Cake B",
+    "price": 12.49,
+    "description": "Another sample cake",
+    "image": "/Products/Red Velvet Cake.png",
+    "stock": 3
+  }
+]

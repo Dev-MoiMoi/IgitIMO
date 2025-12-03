@@ -5,75 +5,145 @@ import Footer from "../components/Footer";
 import { BsTrash } from "react-icons/bs";
 import BackButton from "../components/BackButton";
 import "../styles/style.css";
-import { useCart } from "../context/CartContext";
-import CheckoutModal from "../components/CheckoutModal"; // IMPORT MODAL
+import axios from "axios";
+import API_BASE from "../config/api";
+import CheckoutModal from "../components/CheckoutModal";
+import { useAuth } from "../context/AuthContext";
 
 const Cart = () => {
   const navigate = useNavigate();
-  const { items: cartItems, addItem, removeItem } = useCart();
+  const { user, isAuthenticated, loading: authLoading, setShowLoginModal } = useAuth();
 
-  const [selectedItems, setSelectedItems] = useState(() =>
-    cartItems.map((item) => ({ id: item.id, selected: false }))
-  );
+  const [cartItems, setCartItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [modalItems, setModalItems] = useState([]);
 
-  const [showCheckout, setShowCheckout] = useState(false); // FOR MODAL
-  const [modalItems, setModalItems] = useState([]); // SELECTED ITEMS FOR MODAL
+  const [loadingCart, setLoadingCart] = useState(false);
+  const [loadingQty, setLoadingQty] = useState({});
+  const [loadingDelete, setLoadingDelete] = useState(false);
 
-  const handleSelect = (id) => {
-    setSelectedItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, selected: !item.selected } : item
-      )
-    );
+  // Load cart from backend
+  const loadCart = () => {
+    if (!user) return;
+    setLoadingCart(true);
+    axios
+      .get(`${API_BASE}/cart/${user.id}`)
+      .then(res => {
+        const cart = Array.isArray(res.data.cart)
+          ? res.data.cart
+          : (Array.isArray(res.data) ? res.data : []);
+        setCartItems(cart);
+        setSelectedItems(cart.map(item => ({ id: item.id, selected: false })));
+      })
+      .catch(err => console.error("Failed to load cart:", err))
+      .finally(() => setLoadingCart(false));
   };
-
-  const handleSelectAll = (checked) => {
-    setSelectedItems((prev) =>
-      prev.map((item) => ({ ...item, selected: checked }))
-    );
-  };
-
-  const handleQuantityChange = (id, amount) => {
-    const item = cartItems.find((i) => i.id === id);
-    if (item) addItem(item, amount);
-  };
-
-  const handleDeleteSelected = () => {
-    selectedItems.forEach((item) => {
-      if (item.selected) removeItem(item.id);
-    });
-    setSelectedItems((prev) => prev.filter((item) => !item.selected));
-  };
-
-  const allSelected =
-    selectedItems.length > 0 && selectedItems.every((item) => item.selected);
-
-  const subtotal = cartItems
-    .filter((item) =>
-      selectedItems.find((s) => s.id === item.id && s.selected)
-    )
-    .reduce((acc, item) => acc + item.price * item.quantity, 0)
-    .toFixed(2);
 
   useEffect(() => {
-    setSelectedItems((prev) => {
-      const ids = cartItems.map((item) => item.id);
-      const newSelected = ids
-        .filter((id) => !prev.some((p) => p.id === id))
-        .map((id) => ({ id, selected: false }));
-      return [...prev, ...newSelected];
-    });
-  }, [cartItems]);
+    if (isAuthenticated && user) loadCart();
+  }, [isAuthenticated, user]);
+
+  // Loading state
+  if (authLoading || loadingCart) {
+    return (
+      <>
+        <AppNavbar />
+        <div className="container cart-container text-center my-5">
+          <h4>Loading cart...</h4>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <>
+        <AppNavbar />
+        <div className="container cart-container text-center my-5">
+          <h4>Your cart is empty</h4>
+          <p>Please log in to view and manage your cart.</p>
+          <button className="shop-btn" onClick={() => setShowLoginModal(true)}>
+            Log In
+          </button>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  // Select items
+  const handleSelect = id =>
+    setSelectedItems(prev =>
+      prev.map(item => (item.id === id ? { ...item, selected: !item.selected } : item))
+    );
+
+  const handleSelectAll = checked =>
+    setSelectedItems(prev => prev.map(item => ({ ...item, selected: checked })));
+
+  const allSelected = selectedItems.length > 0 && selectedItems.every(item => item.selected);
+
+  // Quantity change
+  const handleQuantityChange = (cart_item_id, amount) => {
+    const item = cartItems.find(ci => ci.id === cart_item_id);
+    if (!item) return;
+    const newQuantity = item.quantity + amount;
+    if (newQuantity < 1) return;
+
+    setLoadingQty(prev => ({ ...prev, [cart_item_id]: true }));
+
+    setCartItems(prev =>
+      prev.map(ci => (ci.id === cart_item_id ? { ...ci, quantity: newQuantity } : ci))
+    );
+
+    axios
+      .patch(`${API_BASE}/cart/update/${cart_item_id}`, { quantity: newQuantity })
+      .then(() => loadCart())
+      .catch(err => console.error("Failed to update quantity:", err))
+      .finally(() => setLoadingQty(prev => ({ ...prev, [cart_item_id]: false })));
+  };
+
+  // Delete selected
+  const handleDeleteSelected = () => {
+    const itemsToDelete = selectedItems.filter(item => item.selected).map(item => item.id);
+    if (itemsToDelete.length === 0) return;
+
+    setLoadingDelete(true);
+    Promise.all(itemsToDelete.map(id => axios.delete(`${API_BASE}/cart/remove/${id}`)))
+      .then(() => loadCart())
+      .catch(err => console.error("Failed to delete items:", err))
+      .finally(() => setLoadingDelete(false));
+  };
+
+  const subtotal = cartItems
+    .filter(item => selectedItems.find(s => s.id === item.id && s.selected))
+    .reduce((acc, item) => acc + (Number(item.product?.price) || 0) * item.quantity, 0)
+    .toFixed(2);
+
+  const handleCheckout = () => {
+    const selected = cartItems.filter(s =>
+      selectedItems.find(sel => sel.id === s.id && sel.selected)
+    );
+    if (selected.length === 0) {
+      alert("Please select at least one product to checkout.");
+      return;
+    }
+    setModalItems(selected);
+    setShowCheckout(true);
+  };
 
   return (
     <>
       <AppNavbar />
-
       <div className="container cart-container">
         <div className="cart-header">
           <BackButton label="Cart" />
           {cartItems.length > 0 && (
-            <div className="trash-icon" onClick={handleDeleteSelected}>
+            <div
+              className={`trash-icon ${loadingDelete ? "disabled" : ""}`}
+              onClick={!loadingDelete ? handleDeleteSelected : undefined}
+            >
               <BsTrash size={22} />
             </div>
           )}
@@ -82,32 +152,35 @@ const Cart = () => {
         {cartItems.length === 0 ? (
           <div className="empty-cart text-center my-5">
             <div style={{ fontSize: "4rem" }}>:(</div>
-            <p className="fs-5">Your cart is feeling empty... give it some sugar</p>
-            <button
-              className="shop-btn"
-              onClick={() => navigate("/products")}
-            >
+            <p className="fs-5">Your cart is empty</p>
+            <button className="shop-btn" onClick={() => navigate("/products")}>
               Shop Now
             </button>
           </div>
         ) : (
           <>
             <div className="list-group cart-items">
-              {cartItems.map((item) => (
+              {cartItems.map(item => (
                 <div key={item.id} className="list-group-item cart-item">
                   <div className="cart-item-left">
                     <input
                       type="checkbox"
-                      checked={
-                        selectedItems.find((s) => s.id === item.id)?.selected ||
-                        false
-                      }
+                      checked={selectedItems.find(s => s.id === item.id)?.selected || false}
                       onChange={() => handleSelect(item.id)}
+                      disabled={loadingQty[item.id]}
                     />
-                    <img src={item.image} alt={item.name} />
+                    <img
+                      src={item.product?.image || "https://placehold.co/150x150?text=No+Image"}
+                      alt={item.product?.name || "Product"}
+                      style={{ width: "70px", height: "70px", objectFit: "cover", marginRight: "10px" }}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://placehold.co/150x150?text=No+Image";
+                      }}
+                    />
                     <div>
-                      <p className="mb-1">{item.name}</p>
-                      <p className="mb-0 text-muted">₱{item.price}</p>
+                      <p className="mb-1">{item.product?.name || "Unnamed Product"}</p>
+                      <p className="mb-0 text-muted">₱{Number(item.product?.price || 0).toFixed(2)}</p>
                     </div>
                   </div>
 
@@ -115,15 +188,17 @@ const Cart = () => {
                     <button
                       className="btn btn-outline-secondary btn-sm"
                       onClick={() => handleQuantityChange(item.id, -1)}
+                      disabled={item.quantity <= 1 || loadingQty[item.id]}
                     >
-                      −
+                      {loadingQty[item.id] ? "..." : "−"}
                     </button>
                     <span>{item.quantity}</span>
                     <button
                       className="btn btn-outline-secondary btn-sm"
                       onClick={() => handleQuantityChange(item.id, 1)}
+                      disabled={loadingQty[item.id]}
                     >
-                      +
+                      {loadingQty[item.id] ? "..." : "+"}
                     </button>
                   </div>
                 </div>
@@ -135,7 +210,8 @@ const Cart = () => {
                 <input
                   type="checkbox"
                   checked={allSelected}
-                  onChange={(e) => handleSelectAll(e.target.checked)}
+                  onChange={e => handleSelectAll(e.target.checked)}
+                  disabled={Object.values(loadingQty).some(Boolean)}
                 />
                 <span>Select All</span>
               </div>
@@ -146,19 +222,8 @@ const Cart = () => {
                 </span>
                 <button
                   className="checkout-btn"
-                  onClick={() => {
-                    const selected = cartItems.filter((item) =>
-                      selectedItems.find(
-                        (s) => s.id === item.id && s.selected
-                      )
-                    );
-                    if (selected.length === 0) {
-                      alert("Please select at least one product to checkout.");
-                      return;
-                    }
-                    setModalItems(selected);
-                    setShowCheckout(true);
-                  }}
+                  onClick={handleCheckout}
+                  disabled={Object.values(loadingQty).some(Boolean) || loadingDelete}
                 >
                   Check Out
                 </button>
@@ -170,22 +235,19 @@ const Cart = () => {
 
       <Footer />
 
-      {/* CHECKOUT MODAL */}
       {showCheckout && (
         <CheckoutModal
           show={showCheckout}
           items={modalItems}
           onClose={() => setShowCheckout(false)}
-          onCheckoutComplete={() => {
-            modalItems.forEach((item) => removeItem(item.id));
-            setSelectedItems((prev) =>
-              prev.filter(
-                (selected) => !modalItems.some((m) => m.id === selected.id)
-              )
-            );
-            setShowCheckout(false);
-            // Maybe navigate to a success page or show a success message?
-            alert("Order Placed Successfully!");
+          onCheckoutComplete={({ shippingAddress }) => {
+            axios
+              .post(`${API_BASE}/checkout`, { user_id: user.id, items: modalItems, shipping_address: shippingAddress })
+              .then(() => {
+                Promise.all(modalItems.map(item => axios.delete(`${API_BASE}/cart/remove/${item.id}`)))
+                  .then(() => { loadCart(); setShowCheckout(false); alert("Order Placed Successfully!"); });
+              })
+              .catch(err => console.error("Checkout failed:", err));
           }}
         />
       )}
