@@ -7,7 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => localStorage.getItem('isAuthenticated') === 'true');
 
   // Global Modal State
-  const [showRoleModal, setShowRoleModal] = useState(!localStorage.getItem('isAuthenticated'));
+  const [showRoleModal, setShowRoleModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
 
