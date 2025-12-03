@@ -3,6 +3,8 @@ import { Modal, Button, Form, Container, Row, Col } from 'react-bootstrap';
 import { ArrowLeft } from 'lucide-react';
 
 const RegisterModal = ({ show, onRegister, onBack }) => {
+    const [labelType, setLabelType] = React.useState('');
+
     const handleSubmit = (e) => {
         e.preventDefault();
         onRegister();
@@ -58,8 +60,22 @@ const RegisterModal = ({ show, onRegister, onBack }) => {
 
                             <Form.Group className="mb-3 d-flex align-items-center">
                                 <Form.Label className="mb-0 me-3">Label as:</Form.Label>
-                                <Button variant="outline-secondary" size="sm" className="me-2 rounded-pill px-3">Work</Button>
-                                <Button variant="outline-secondary" size="sm" className="rounded-pill px-3">Home</Button>
+                                <Button 
+                                    variant={labelType === 'Work' ? 'dark' : 'outline-secondary'} 
+                                    size="sm" 
+                                    className="me-2 rounded-pill px-3"
+                                    onClick={() => setLabelType('Work')}
+                                >
+                                    Work
+                                </Button>
+                                <Button 
+                                    variant={labelType === 'Home' ? 'dark' : 'outline-secondary'} 
+                                    size="sm" 
+                                    className="rounded-pill px-3"
+                                    onClick={() => setLabelType('Home')}
+                                >
+                                    Home
+                                </Button>
                             </Form.Group>
                         </div>
 

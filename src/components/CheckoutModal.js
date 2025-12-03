@@ -3,7 +3,7 @@ import { Modal, Button, Form, Row, Col, Image } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
 
 const CheckoutModal = ({ show, onClose, items, onCheckoutComplete }) => {
-  const { isAuthenticated, setShowLoginModal } = useAuth();
+  const { isAuthenticated, setShowRoleModal } = useAuth();
   const [formData, setFormData] = useState({
     fullName: '',
     phoneNumber: '',
@@ -18,7 +18,7 @@ const CheckoutModal = ({ show, onClose, items, onCheckoutComplete }) => {
 
   const handleLoginClick = () => {
     onClose();
-    setShowLoginModal(true);
+    setShowRoleModal(true);
   };
 
   const handlePlaceOrder = () => {
