@@ -38,11 +38,13 @@ const AppNavbar = () => {
               <NavLink to="/cart" className="nav-link">Cart</NavLink>
             </Nav.Item>
 
-            <Nav.Item as="li">
-              <Nav.Link as="button" onClick={() => setShowRoleModal(true)} className="nav-link bg-transparent border-0">
-                Account
-              </Nav.Link>
-            </Nav.Item>
+            {!isAuthenticated && (
+              <Nav.Item as="li">
+                <Nav.Link as="button" onClick={() => setShowRoleModal(true)} className="nav-link bg-transparent border-0">
+                  Account
+                </Nav.Link>
+              </Nav.Item>
+            )}
 
             {isAuthenticated && (
               <Nav.Item as="li" className="ms-3">

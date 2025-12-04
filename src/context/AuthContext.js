@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext(null);
 
@@ -21,12 +22,17 @@ export const AuthProvider = ({ children }) => {
     setShowRegisterModal(false);
   };
 
+  const navigate = useNavigate();
+
+  // ... existing login ...
+
   const logout = () => {
     setUserRole(null);
     setIsAuthenticated(false);
     localStorage.removeItem('userRole');
     localStorage.removeItem('isAuthenticated');
     setShowRoleModal(true);
+    navigate('/');
   };
 
   return (
