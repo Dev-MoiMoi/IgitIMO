@@ -6,7 +6,7 @@ import '../styles/style.css';
 import { useAuth } from '../context/AuthContext';
 
 const AppNavbar = () => {
-  const { isAuthenticated, logout, setShowRoleModal } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
 
   return (
     <Navbar
@@ -38,23 +38,17 @@ const AppNavbar = () => {
               <NavLink to="/cart" className="nav-link">Cart</NavLink>
             </Nav.Item>
 
-            {isAuthenticated ? (
+            <Nav.Item as="li">
+              <NavLink to="/about" className="nav-link">About Us</NavLink>
+            </Nav.Item>
+
+            {isAuthenticated && (
               <Nav.Item as="li" className="ms-3">
                 <button
                   onClick={logout}
                   className="btn btn-outline-light btn-sm rounded-0"
                 >
                   Log Out
-                </button>
-              </Nav.Item>
-            ) : (
-              <Nav.Item as="li">
-                <button
-                  onClick={() => setShowRoleModal(true)}
-                  className="nav-link btn btn-link text-decoration-none"
-                  style={{ border: 'none', background: 'none' }}
-                >
-                  Account
                 </button>
               </Nav.Item>
             )}
