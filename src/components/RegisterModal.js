@@ -27,28 +27,28 @@ const RegisterModal = ({ show, onRegister, onBack }) => {
                     <Form onSubmit={handleSubmit} className="mx-auto" style={{ maxWidth: '600px' }}>
                         <div className="mb-4 p-3 border rounded-3">
                             <Form.Group className="mb-3">
-                                <Form.Control type="text" placeholder="Username" className="bg-light border-light" />
+                                <Form.Control type="text" placeholder="Username" />
                             </Form.Group>
                             <Form.Group className="mb-3">
-                                <Form.Control type="password" placeholder="Password" className="bg-light border-light" />
+                                <Form.Control type="password" placeholder="Password" />
                             </Form.Group>
                         </div>
 
                         <div className="mb-4 p-3 border rounded-3">
                             <Form.Group className="mb-3">
-                                <Form.Control type="text" placeholder="Full Name" className="bg-light border-light" />
+                                <Form.Control type="text" placeholder="Full Name" />
                             </Form.Group>
                             <Form.Group className="mb-3">
-                                <Form.Control type="text" placeholder="Phone Number" className="bg-light border-light" />
+                                <Form.Control type="text" placeholder="Phone Number" />
                             </Form.Group>
                             <Form.Group className="mb-3">
-                                <Form.Control type="text" placeholder="Region, Province, City, Barangay" className="bg-light border-light" />
+                                <Form.Control type="text" placeholder="Region, Province, City, Barangay" />
                             </Form.Group>
                             <Form.Group className="mb-3">
-                                <Form.Control type="text" placeholder="Postal Code" className="bg-light border-light" />
+                                <Form.Control type="text" placeholder="Postal Code" />
                             </Form.Group>
                             <Form.Group className="mb-3">
-                                <Form.Control type="text" placeholder="Street Name, Building, House No." className="bg-light border-light" />
+                                <Form.Control type="text" placeholder="Street Name, Building, House No." />
                             </Form.Group>
 
                             <Form.Group className="mb-3 d-flex align-items-center">

@@ -14,6 +14,7 @@ const ProductCard = ({ product, className = '' }) => {
         src={product.image}
         alt={product.name}
         className="card-image"
+        style={product.quantity <= 0 ? { filter: 'grayscale(100%)' } : {}}
         onError={(e) => {
           e.target.onerror = null;
           e.target.src =

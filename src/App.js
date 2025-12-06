@@ -5,7 +5,9 @@ import ProductList from './pages/ProductList';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import AboutUs from './pages/AboutUs';
+import OrderHistory from './pages/OrderHistory';
 import AdminDashboard from './pages/AdminDashboard';
+import EditProductPage from './pages/EditProductPage';
 import RoleSelectionModal from './components/RoleSelectionModal';
 import LoginModal from './components/LoginModal';
 import RegisterModal from './components/RegisterModal';
@@ -31,7 +33,7 @@ const AppContent = () => {
       setShowLoginModal(false);
       setShowRegisterModal(false);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, setShowRoleModal, setShowLoginModal, setShowRegisterModal]);
 
   const handleRoleSelect = (role) => {
     setSelectedRole(role);
@@ -63,7 +65,9 @@ const AppContent = () => {
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/about" element={<AboutUs />} />
+        <Route path="/orders" element={isAuthenticated ? <OrderHistory /> : <Navigate to="/" />} />
         <Route path="/admin" element={userRole === 'admin' ? <AdminDashboard /> : <Navigate to="/" />} />
+        <Route path="/admin/product/edit/:id" element={userRole === 'admin' ? <EditProductPage /> : <Navigate to="/" />} />
       </Routes>
 
       <RoleSelectionModal

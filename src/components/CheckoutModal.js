@@ -14,7 +14,7 @@ const CheckoutModal = ({ show, onClose, items, onCheckoutComplete }) => {
     label: 'Home'
   });
 
-  const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+  const total = items.reduce((acc, item) => acc + (Number(item.product?.price) || 0) * item.quantity, 0).toFixed(2);
 
   const handleLoginClick = () => {
     onClose();
@@ -28,7 +28,13 @@ const CheckoutModal = ({ show, onClose, items, onCheckoutComplete }) => {
       handleLoginClick();
       return;
     }
-    onCheckoutComplete();
+    onCheckoutComplete({
+      shippingAddress: {
+        ...formData,
+        full_name: formData.fullName,
+        phone_number: formData.phoneNumber
+      }
+    });
   };
 
   return (
@@ -50,10 +56,10 @@ const CheckoutModal = ({ show, onClose, items, onCheckoutComplete }) => {
         <div className="mb-4">
           {items.map(item => (
             <div key={item.id} className="d-flex align-items-center mb-3 p-2 border rounded bg-light">
-              <Image src={item.image} alt={item.name} style={{ width: '60px', height: '60px', objectFit: 'cover' }} className="rounded me-3" />
+              <Image src={item.product?.image} alt={item.product?.name} style={{ width: '60px', height: '60px', objectFit: 'cover' }} className="rounded me-3" />
               <div>
-                <div className="fw-bold">{item.name}</div>
-                <div className="text-muted small">₱{item.price}</div>
+                <div className="fw-bold">{item.product?.name}</div>
+                <div className="text-muted small">₱{Number(item.product?.price || 0).toFixed(2)}</div>
                 <div className="text-muted small">Quantity: {item.quantity}</div>
               </div>
             </div>

@@ -5,6 +5,7 @@ import AppNavbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import BackButton from '../components/BackButton';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import LoginModal from '../components/LoginModal';
 import axios from 'axios';
 import API_BASE from '../config/api';
@@ -14,7 +15,8 @@ const ProductDetail = () => {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, userRole } = useAuth();
+  const { addItem } = useCart();
 
   const [product, setProduct] = useState(location.state?.product || null);
   const [allProducts, setAllProducts] = useState([]);
@@ -99,6 +101,7 @@ const ProductDetail = () => {
     axios.post(`${API_BASE}/cart/add`, payload)
       .then(() => {
         console.log("Add to cart success");
+        addItem(product); // Update context
         setAdded(true);
         setTimeout(() => setAdded(false), 2000);
       })
@@ -150,24 +153,37 @@ const ProductDetail = () => {
             <div className="d-flex gap-2 mt-3">
 
               {/* ✅ UPDATED BUTTON WITH SPINNER */}
-              <Button
-                className="rounded-0 px-4 py-2 custom-cart-btn"
-                onClick={handleAddToCart}
-                disabled={loadingAdd || !product}
-              >
-                {loadingAdd ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2"></span>
-                    Adding...
-                  </>
-                ) : (
-                  "Add to cart"
-                )}
-              </Button>
+              {userRole === 'admin' ? (
+                <Button
+                  className="rounded-0 px-4 py-2 btn-dark"
+                  onClick={() => navigate(`/admin/product/edit/${product.id}`)}
+                >
+                  Edit Product
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    className="rounded-0 px-4 py-2 custom-cart-btn"
+                    onClick={handleAddToCart}
+                    disabled={loadingAdd || !product}
+                  >
+                    {loadingAdd ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2"></span>
+                        Adding...
+                      </>
+                    ) : added ? (
+                      "Added!"
+                    ) : (
+                      "Add to cart"
+                    )}
+                  </Button>
 
-              <Button className="rounded-0 px-4 py-2 custom-wishlist-btn">
-                Add to wishlist
-              </Button>
+                  <Button className="rounded-0 px-4 py-2 custom-wishlist-btn">
+                    Add to wishlist
+                  </Button>
+                </>
+              )}
             </div>
 
             {added && <div className="mt-3 text-success">Added to cart</div>}
@@ -180,7 +196,14 @@ const ProductDetail = () => {
         <Row className={`g-4 fade-related ${fade ? 'fade-in' : 'fade-out'}`}>
           {visibleProducts.map(prod => (
             <Col lg={4} md={6} key={prod.id}>
-              <Card className="border-0 rounded-0 related-card">
+              <Card
+                className="border-0 rounded-0 related-card"
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  navigate(`/product/${prod.id}`, { state: { product: prod } });
+                  window.scrollTo(0, 0);
+                }}
+              >
                 <div className="related-img-wrapper">
                   <img
                     src={prod.image}

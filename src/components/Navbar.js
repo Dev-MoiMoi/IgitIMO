@@ -5,8 +5,10 @@ import '../styles/style.css';
 
 import { useAuth } from '../context/AuthContext';
 
+import ThemeToggle from './ThemeToggle';
+
 const AppNavbar = () => {
-  const { isAuthenticated, logout, setShowRoleModal } = useAuth();
+  const { isAuthenticated, logout, setShowRoleModal, userRole } = useAuth();
 
   return (
     <Navbar
@@ -34,8 +36,26 @@ const AppNavbar = () => {
               <NavLink to="/products" className="nav-link">Shop</NavLink>
             </Nav.Item>
 
+            {userRole !== 'admin' && (
+              <Nav.Item as="li">
+                <NavLink to="/cart" className="nav-link">Cart</NavLink>
+              </Nav.Item>
+            )}
+
+            {isAuthenticated && userRole !== 'admin' && (
+              <Nav.Item as="li">
+                <NavLink to="/orders" className="nav-link">Orders</NavLink>
+              </Nav.Item>
+            )}
+
+            {userRole === 'admin' && (
+              <Nav.Item as="li">
+                <NavLink to="/admin" className="nav-link">Dashboard</NavLink>
+              </Nav.Item>
+            )}
+
             <Nav.Item as="li">
-              <NavLink to="/cart" className="nav-link">Cart</NavLink>
+              <ThemeToggle />
             </Nav.Item>
 
             {!isAuthenticated && (

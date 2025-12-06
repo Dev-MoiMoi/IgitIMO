@@ -10,43 +10,34 @@ import API_BASE from "../config/api";
 import CheckoutModal from "../components/CheckoutModal";
 import { useAuth } from "../context/AuthContext";
 
+import { useCart } from "../context/CartContext";
+
 const Cart = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, loading: authLoading, setShowLoginModal } = useAuth();
+  const { items: cartItems, setItems, removeItem, clearCart, totalItems, updateItem, fetchCart } = useCart();
 
-  const [cartItems, setCartItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [showCheckout, setShowCheckout] = useState(false);
   const [modalItems, setModalItems] = useState([]);
 
-  const [loadingCart, setLoadingCart] = useState(false);
   const [loadingQty, setLoadingQty] = useState({});
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
 
-  // Load cart from backend
-  const loadCart = () => {
-    if (!user) return;
-    setLoadingCart(true);
-    axios
-      .get(`${API_BASE}/cart/${user.id}`)
-      .then(res => {
-        const cart = Array.isArray(res.data.cart)
-          ? res.data.cart
-          : (Array.isArray(res.data) ? res.data : []);
-        setCartItems(cart);
-        setSelectedItems(cart.map(item => ({ id: item.id, selected: false })));
-      })
-      .catch(err => console.error("Failed to load cart:", err))
-      .finally(() => setLoadingCart(false));
-  };
-
+  // Sync selected items with cart items
   useEffect(() => {
-    if (isAuthenticated && user) loadCart();
-  }, [isAuthenticated, user]);
+    setSelectedItems(prev => {
+      const newSelected = cartItems.map(item => {
+        const existing = prev.find(p => p.id === item.id);
+        return { id: item.id, selected: existing ? existing.selected : false };
+      });
+      return newSelected;
+    });
+  }, [cartItems]);
 
   // Loading state
-  if (authLoading || loadingCart) {
+  if (authLoading) {
     return (
       <>
         <AppNavbar />
@@ -94,25 +85,14 @@ const Cart = () => {
 
     setLoadingQty(prev => ({ ...prev, [cart_item_id]: true }));
 
-    // Optimistic update
-    setCartItems(prev =>
-      prev.map(ci => (ci.id === cart_item_id ? { ...ci, quantity: newQuantity } : ci))
-    );
-
-    console.log(`Updating quantity for item ${cart_item_id} to ${newQuantity}`);
-
     axios
       .patch(`${API_BASE}/cart/update-quantity/${cart_item_id}`, { quantity: newQuantity })
       .then(() => {
         console.log("Quantity update success");
-        loadCart();
+        updateItem(cart_item_id, newQuantity);
       })
       .catch(err => {
         console.error("Failed to update quantity:", err);
-        // Revert on failure
-        setCartItems(prev =>
-          prev.map(ci => (ci.id === cart_item_id ? { ...ci, quantity: item.quantity } : ci))
-        );
         alert("Failed to update quantity. Please try again.");
       })
       .finally(() => setLoadingQty(prev => ({ ...prev, [cart_item_id]: false })));
@@ -125,7 +105,10 @@ const Cart = () => {
 
     setLoadingDelete(true);
     Promise.all(itemsToDelete.map(id => axios.delete(`${API_BASE}/cart/remove/${id}`)))
-      .then(() => loadCart())
+      .then(() => {
+        // Remove from context
+        itemsToDelete.forEach(id => removeItem(id));
+      })
       .catch(err => console.error("Failed to delete items:", err))
       .finally(() => setLoadingDelete(false));
   };
@@ -154,6 +137,16 @@ const Cart = () => {
       setTimeout(() => setCheckoutError(""), 3000);
       return;
     }
+
+    // Check stock availability
+    for (const item of selected) {
+      if (item.quantity > item.product.quantity) {
+        setCheckoutError(`You are placing an order for ${item.product.name} more than the stock (Available: ${item.product.quantity})`);
+        setTimeout(() => setCheckoutError(""), 5000);
+        return;
+      }
+    }
+
     setModalItems(selected);
     setShowCheckout(true);
   };
@@ -273,7 +266,7 @@ const Cart = () => {
               .then(() => {
                 console.log("Checkout success");
                 Promise.all(modalItems.map(item => axios.delete(`${API_BASE}/cart/remove/${item.id}`)))
-                  .then(() => { loadCart(); setShowCheckout(false); alert("Order Placed Successfully!"); });
+                  .then(() => { fetchCart(); setShowCheckout(false); alert("Order Placed Successfully!"); });
               })
               .catch(err => {
                 console.error("Checkout failed:", err);

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button, Card } from 'react-bootstrap';
 import AppNavbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { useTheme } from '../context/ThemeContext';
 import '../styles/style.css';
 
 const ProductCard = ({ product }) => (
@@ -26,6 +27,7 @@ const ProductCard = ({ product }) => (
 );
 
 const Home = () => {
+  const { theme } = useTheme();
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -34,6 +36,10 @@ const Home = () => {
       .then((data) => setProducts(data.data || []))
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
+
+  const heroImage = theme === 'dark'
+    ? 'http://localhost:8082/assets/hero-dark.jpg'
+    : 'http://localhost:8082/assets/cover-img.png';
 
   return (
     <div className="homePage">
@@ -50,7 +56,7 @@ const Home = () => {
           <header
             className="heroSection"
             style={{
-              backgroundImage: `url('http://localhost:8082/assets/cover-img.png')`,
+              backgroundImage: `url('${heroImage}')`,
             }}
           >
             <div className="hero-overlay"></div>
