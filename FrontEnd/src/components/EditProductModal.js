@@ -47,17 +47,11 @@ const EditProductModal = ({ show, onHide, product, onProductUpdated }) => {
             payload.append('description', formData.description);
             payload.append('price', parseFloat(formData.price));
             payload.append('quantity', parseInt(formData.quantity));
-            if (formData.imageFile) {
-                payload.append('image', formData.imageFile);
-            }
-            // Note: For PUT requests with FormData, Laravel/PHP sometimes struggles.
-            // A common workaround is to use POST with _method: PUT.
+            if (formData.imageFile) payload.append('image', formData.imageFile);
             payload.append('_method', 'PUT');
 
             await axios.post(`${API_BASE}/products/${product.id}`, payload, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                headers: { 'Content-Type': 'multipart/form-data' }
             });
 
             onProductUpdated();
@@ -89,12 +83,26 @@ const EditProductModal = ({ show, onHide, product, onProductUpdated }) => {
     };
 
     return (
-        <Modal show={show} onHide={onHide} centered>
-            <Modal.Header closeButton>
-                <Modal.Title>Edit Product</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+        <Modal
+            show={show}
+            onHide={onHide}
+            centered
+            dialogClassName="custom-login-modal"
+        >
+            <Modal.Body className="custom-modal-body p-4">
+                {/* Top-right close button */}
+                <Button
+                    variant="link"
+                    className="modal-close-btn"
+                    onClick={onHide}
+                >
+                    ×
+                </Button>
+
+                <h4 className="modal-title mb-4 text-center">Edit Product</h4>
+
                 {error && <Alert variant="danger">{error}</Alert>}
+
                 <Form onSubmit={handleUpdate}>
                     <Form.Group className="mb-3">
                         <Form.Label>Product Name</Form.Label>
@@ -132,6 +140,7 @@ const EditProductModal = ({ show, onHide, product, onProductUpdated }) => {
                                 />
                             </Form.Group>
                         </Col>
+
                         <Col md={6}>
                             <Form.Group className="mb-3">
                                 <Form.Label>Quantity</Form.Label>
@@ -141,6 +150,7 @@ const EditProductModal = ({ show, onHide, product, onProductUpdated }) => {
                                     value={formData.quantity}
                                     onChange={handleChange}
                                     required
+                                    min="0"
                                 />
                             </Form.Group>
                         </Col>
@@ -165,10 +175,14 @@ const EditProductModal = ({ show, onHide, product, onProductUpdated }) => {
                         <Button variant="danger" onClick={handleDelete} disabled={loading}>
                             Delete Product
                         </Button>
+
                         <div className="d-flex gap-2">
-                            <Button variant="secondary" onClick={onHide}>Cancel</Button>
+                            <Button variant="secondary" onClick={onHide}>
+                                Cancel
+                            </Button>
+
                             <Button variant="primary" type="submit" disabled={loading}>
-                                {loading ? 'Saving...' : 'Save Changes'}
+                                {loading ? "Saving..." : "Save Changes"}
                             </Button>
                         </div>
                     </div>

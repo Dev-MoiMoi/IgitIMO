@@ -28,7 +28,7 @@ const ProductDetail = () => {
 
   useEffect(() => {
     if (!product) {
-      axios.get(`${API_BASE}/products/${id}`)
+      axios.get(`http://localhost:8082/api/products/${id}`)
         .then(res => {
           const prod = res.data?.data || res.data || null;
           setProduct(prod);
@@ -36,7 +36,7 @@ const ProductDetail = () => {
         .catch(err => console.error(err));
     }
 
-    axios.get(`${API_BASE}/products`)
+    axios.get(`http://localhost:8082/api/products`)
       .then(res => {
         const productsArray = Array.isArray(res.data)
           ? res.data
@@ -77,7 +77,7 @@ const ProductDetail = () => {
       : allRelated;
 
   // ✅ UPDATED: Add to cart with loading indicator
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!isAuthenticated) {
       setShowLogin(true);
       return;
@@ -90,31 +90,22 @@ const ProductDetail = () => {
 
     setLoadingAdd(true); // 🔥 Show loading spinner
 
-    const payload = {
-      user_id: user.id,
-      product_id: product.id,
-      quantity: 1
-    };
-
-    console.log("Sending Add to Cart request:", payload);
-
-    axios.post(`${API_BASE}/cart/add`, payload)
-      .then(() => {
-        console.log("Add to cart success");
-        addItem(product); // Update context
+    try {
+      console.log("ProductDetail: Calling addItem...");
+      const success = await addItem(product); // Use context to add item (handles API call)
+      console.log("ProductDetail: addItem returned:", success);
+      if (success) {
+        console.log("ProductDetail: Setting added to true");
         setAdded(true);
         setTimeout(() => setAdded(false), 2000);
-      })
-      .catch(err => {
-        console.error("Add to cart failed:", err);
-        if (err.response) {
-          console.error("Server responded with:", err.response.status);
-          console.error("Response data:", err.response.data);
-        }
-      })
-      .finally(() => {
-        setLoadingAdd(false); // 🔥 Hide loading spinner
-      });
+      } else {
+        console.log("ProductDetail: addItem failed (returned false)");
+      }
+    } catch (err) {
+      console.error("ProductDetail: Add to cart failed with error:", err);
+    } finally {
+      setLoadingAdd(false); // 🔥 Hide loading spinner
+    }
   };
 
   return (
@@ -165,7 +156,7 @@ const ProductDetail = () => {
                   <Button
                     className="rounded-0 px-4 py-2 custom-cart-btn"
                     onClick={handleAddToCart}
-                    disabled={loadingAdd || !product}
+                    disabled={loadingAdd || !product || product?.quantity <= 0}
                   >
                     {loadingAdd ? (
                       <>
@@ -174,13 +165,11 @@ const ProductDetail = () => {
                       </>
                     ) : added ? (
                       "Added!"
+                    ) : product?.quantity <= 0 ? (
+                      "Out of Stock"
                     ) : (
                       "Add to cart"
                     )}
-                  </Button>
-
-                  <Button className="rounded-0 px-4 py-2 custom-wishlist-btn">
-                    Add to wishlist
                   </Button>
                 </>
               )}
@@ -197,8 +186,7 @@ const ProductDetail = () => {
           {visibleProducts.map(prod => (
             <Col lg={4} md={6} key={prod.id}>
               <Card
-                className="border-0 rounded-0 related-card"
-                style={{ cursor: 'pointer' }}
+                className="border-0 rounded-0 related-card cursor-pointer"
                 onClick={() => {
                   navigate(`/product/${prod.id}`, { state: { product: prod } });
                   window.scrollTo(0, 0);

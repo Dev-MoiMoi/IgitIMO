@@ -1,4 +1,5 @@
 /* GLOBAL STYLES */
+/* Defines global CSS variables for colors, spacing, and layout dimensions. */
 :root {
   /* Universal Spacing System */
   --spacing-xs: 0.25rem;
@@ -41,11 +42,17 @@
   --text-secondary: #4b5563;
   --border-color: #e5e7eb;
   --card-bg: #ffffff;
-  --navbar-text: #000000;
+  --navbar-text: #222222;
   --navbar-bg-scrolled: #ffffff;
 }
 
+body, .page, * {
+  font-family: 'Quicksand', sans-serif;
+  color: #1f2937;
+}
+
 /* Dark Mode Overrides */
+/* Overrides CSS variables to apply dark mode theme colors. */
 .dark-mode {
   --bg-primary: #111827;
   --bg-secondary: #1f2937;
@@ -57,11 +64,13 @@
   --navbar-bg-scrolled: #1f2937;
 }
 
+/* Styles the navigation links in the custom navbar. */
 .customNavbar .nav-link {
   color: var(--navbar-text) !important;
-  font-weight: 500;
+  font-weight: 300;
 }
 
+/* Highlights the currently active navigation link. */
 .customNavbar .nav-link.active {
   border-color: var(--primary-color);
   /* visible but no layout shift */
@@ -73,6 +82,7 @@
 
 
 /* HERO SECTION */
+/* Sets the layout and background for the hero section. */
 .heroSection {
   height: 100vh;
   position: relative;
@@ -86,6 +96,7 @@
   padding-left: 2%;
 }
 
+/* Positions and styles the content within the hero section. */
 .hero-content {
   position: relative;
   z-index: 2;
@@ -97,6 +108,7 @@
   gap: var(--spacing-md);
 }
 
+/* Styles the main heading in the hero section. */
 .heroSection h1 {
   font-size: 6rem;
   font-weight: 500;
@@ -104,10 +116,12 @@
   max-width: 90%;
 }
 
+/* Ensures spans within the hero heading display as blocks. */
 .hero-content h1 span {
   display: block;
 }
 
+/* Enforces the Montserrat font family for hero section elements. */
 .heroSection,
 .heroSection h1,
 .heroSection p,
@@ -117,6 +131,7 @@
 }
 
 /* BUTTONS */
+/* Styles various button types with primary color and hover effects. */
 .hero-btn,
 button,
 .btn,
@@ -137,6 +152,7 @@ a.button {
   cursor: pointer;
 }
 
+/* Defines the hover state for buttons, darkening the background. */
 .hero-btn:hover,
 button:hover,
 .btn:hover,
@@ -147,37 +163,44 @@ a.button:hover {
 }
 
 /* SECTIONS */
+/* Styles the titles of content sections. */
 .section-title {
   font-size: 1.8rem;
   font-weight: 600;
 }
 
+/* Styles the descriptions of content sections. */
 .section-desc {
   font-size: 1rem;
   color: var(--text-secondary);
 }
 
 /* PRODUCT PRESENTATION */
+/* Adds emphasis to text with a bolder font weight. */
 .highlight {
   font-weight: 600;
 }
 
+/* Styles the title for the 'best' items section. */
 .best-title {
   font-size: 1.4rem;
   font-weight: 600;
 }
 
+/* Styles the description for the 'best' items section. */
 .best-desc {
   color: var(--text-secondary);
 }
 
 /* FLAVOR IMAGES */
+/* Wraps flavor images with fixed height and overflow hiding. */
 .flavor-img-wrapper {
   max-width: 100%;
   height: 600px;
   overflow: hidden;
 }
 
+/* Styles the flavor image to cover its container. */
 .flavor-image {
   width: 100%;
   height: 100%;
@@ -186,12 +209,14 @@ a.button:hover {
 }
 
 /* CROSSFADE ANIMATION */
+/* Container for crossfading image animations. */
 .crossfade-wrapper {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
+/* Styles images involved in the crossfade animation. */
 .crossfade-img {
   position: absolute;
   inset: 0;
@@ -202,30 +227,36 @@ a.button:hover {
   transition: opacity 600ms ease-in-out;
 }
 
+/* Displays the active image in the crossfade. */
 .crossfade-img.show {
   opacity: 1;
   z-index: 2;
 }
 
+/* Hides the inactive image in the crossfade. */
 .crossfade-img.hide {
   opacity: 0;
   z-index: 1;
 }
 
 /* PRODUCT CARDS */
+/* Styles the individual product card container. */
 .product-card {
   transition: transform 300ms ease, box-shadow 300ms ease;
 }
 
+/* Applies animation styles when product cards are swapped. */
 .product-card.swap-animate {
   transform: translateY(-8px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
 }
 
+/* Sets the dimensions for the product image container. */
 .product-card .product-img-wrapper {
   height: 300px;
 }
 
+/* Ensures product images cover their container. */
 .product-img-wrapper img,
 .product-img {
   width: 100%;
@@ -233,20 +264,24 @@ a.button:hover {
   object-fit: cover;
 }
 
+/* Removes padding from the product card body. */
 .product-card .card-body {
   padding-left: 0;
   padding-right: 0;
 }
 
+/* Styles the product card title. */
 .product-card h5 {
   font-size: 1.1rem;
 }
 
+/* Adds spacing below paragraphs in product cards. */
 .product-card p {
   margin-bottom: 0.4rem;
 }
 
 /* PRODUCT GRID */
+/* Defines a 3-column grid layout for products. */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -254,6 +289,7 @@ a.button:hover {
 }
 
 /* CARDS */
+/* Resets default Bootstrap card styles for a custom look. */
 .card {
   background: transparent;
   overflow: hidden;
@@ -262,6 +298,7 @@ a.button:hover {
   box-shadow: none !important;
 }
 
+/* Adds a lift and shadow effect on hover for cards. */
 .card:hover,
 .product-card:hover {
   transform: translateY(-6px);
@@ -269,28 +306,34 @@ a.button:hover {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Styles generic card images with fixed height. */
 .card-image {
   width: 100%;
   height: 12rem;
   object-fit: cover;
 }
 
+/* Adds padding to the generic card body. */
 .card-body {
   padding: var(--spacing-md);
 }
 
+/* Styles the title within generic cards. */
 .card-title {
   font-size: 1.125rem;
   font-weight: 600;
   margin-bottom: var(--spacing-xs);
+  text-decoration: none;
 }
 
+/* Styles the description text within generic cards. */
 .card-description {
   color: #4b5563;
   font-size: 0.875rem;
   margin-top: var(--spacing-xs);
 }
 
+/* Styles the price text within generic cards. */
 .card-price {
   color: #111827;
   font-weight: bold;
@@ -298,6 +341,7 @@ a.button:hover {
 }
 
 /* UNIVERSAL PAGE POSITIONING */
+/* Sets the main page margins and minimum height. */
 .page {
   margin-top: var(--page-top-offset);
   margin-left: var(--page-left-offset);
@@ -306,12 +350,14 @@ a.button:hover {
   min-height: calc(100vh - var(--page-top-offset) - var(--page-bottom-offset));
 }
 
+/* Styles the custom cart button with primary colors. */
 .custom-cart-btn {
   background-color: #ed0a3f !important;
   border-color: #ed0a3f !important;
   color: white !important;
 }
 
+/* Darkens the custom cart button on hover. */
 .custom-cart-btn:hover {
   background-color: #a30026 !important;
   border-color: #a30026 !important;
@@ -319,6 +365,7 @@ a.button:hover {
 
 
 /* CART */
+/* Centers and constrains the cart page content. */
 .cart-container {
   margin: var(--page-top-offset) auto var(--page-bottom-offset) auto;
   max-width: 800px;
@@ -327,6 +374,7 @@ a.button:hover {
 }
 
 
+/* Layouts the cart header area. */
 .cart-header {
   display: flex;
   justify-content: space-between;
@@ -334,6 +382,7 @@ a.button:hover {
   margin-bottom: var(--spacing-md);
 }
 
+/* Styles the trash icon for removing items. */
 .trash-icon svg,
 .trash-icon svg path {
   color: var(--primary-color) !important;
@@ -343,6 +392,7 @@ a.button:hover {
   transition: 0.25s ease;
 }
 
+/* Adds hover effects to the trash icon. */
 .trash-icon svg:hover,
 .trash-icon svg:hover path {
   color: #a30026 !important;
@@ -353,6 +403,7 @@ a.button:hover {
 
 
 
+/* Styles the back arrow in the cart header. */
 .cart-header .back-arrow {
   display: flex;
   align-items: center;
@@ -360,30 +411,35 @@ a.button:hover {
   cursor: pointer;
 }
 
+/* Layouts individual items in the cart list. */
 .cart-items .cart-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
+/* Groups the left side content of a cart item. */
 .cart-item-left {
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
 }
 
+/* Styles the product image in a cart item. */
 .cart-item-left img {
   width: 80px;
   height: 80px;
   object-fit: cover;
 }
 
+/* Layouts the quantity increase/decrease controls. */
 .quantity-controls {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
 }
 
+/* Styles the footer area of the cart. */
 .cart-footer {
   display: flex;
   justify-content: space-between;
@@ -393,6 +449,7 @@ a.button:hover {
   border-top: 1px solid var(--border-color);
 }
 
+/* Aligns the select all and subtotal sections. */
 .cart-footer .select-all,
 .cart-footer .subtotal {
   display: flex;
@@ -400,10 +457,12 @@ a.button:hover {
   gap: var(--spacing-sm);
 }
 
+/* Highlights the subtotal amount. */
 .cart-footer .subtotal .text-success {
   font-weight: bold;
 }
 
+/* Centers content when the cart is empty. */
 .empty-cart {
   display: flex;
   flex-direction: column;
@@ -414,6 +473,7 @@ a.button:hover {
 }
 
 /* CHECKOUT */
+/* Layouts the checkout page container. */
 .checkout-container {
   margin-top: var(--page-top-offset);
   margin-left: var(--page-left-offset);
@@ -422,6 +482,7 @@ a.button:hover {
   min-height: calc(100vh - var(--page-top-offset) - var(--page-bottom-offset));
 }
 
+/* Styles the checkout action button. */
 .checkout-btn {
   background-color: var(--primary-color);
   /* your theme color */
@@ -433,11 +494,13 @@ a.button:hover {
   transition: 0.3s ease;
 }
 
+/* Darkens the checkout button on hover. */
 .checkout-btn:hover {
   background-color: var(--primary-hover);
   /* hover color */
 }
 
+/* Styles the 'continue shopping' button. */
 .shop-btn {
   background-color: var(--primary-color);
   /* your theme */
@@ -449,6 +512,7 @@ a.button:hover {
   transition: 0.3s ease;
 }
 
+/* Darkens the shopping button on hover. */
 .shop-btn:hover {
   background-color: var(--primary-hover);
   /* hover */
@@ -457,6 +521,7 @@ a.button:hover {
 
 
 /* UNIVERSAL BACK BUTTON POSITIONING */
+/* Styles the universal back navigation button. */
 .back-btn {
   color: #1f2937;
   text-decoration: none;
@@ -470,11 +535,13 @@ a.button:hover {
   margin-bottom: var(--spacing-md);
 }
 
+/* Underlines the back button on hover. */
 .back-btn:hover {
   text-decoration: underline;
 }
 
 /* Back button container for consistent positioning */
+/* Positions the container for the back button. */
 .back-button-container {
   position: relative;
   width: 100%;
@@ -482,6 +549,7 @@ a.button:hover {
 }
 
 /* Universal page header for consistent positioning */
+/* Styles the header section of a page. */
 .page-header {
   position: relative;
   width: 100%;
@@ -489,6 +557,7 @@ a.button:hover {
   padding-top: var(--spacing-md);
 }
 
+/* Resets margins for page header headings. */
 .page-header h1,
 .page-header h2,
 .page-header h3 {
@@ -497,12 +566,14 @@ a.button:hover {
 }
 
 /* Universal page content wrapper */
+/* Wraps the main content of a page. */
 .page-content {
   position: relative;
   width: 100%;
   min-height: calc(100vh - var(--page-top-offset) - var(--page-bottom-offset) - 120px);
 }
 
+/* Styles the login prompt message. */
 .login-prompt {
   margin-bottom: var(--spacing-lg);
   font-size: 0.95rem;
@@ -511,6 +582,7 @@ a.button:hover {
   align-items: center;
 }
 
+/* Styles the small button within the login prompt. */
 .login-prompt .btn-sm {
   margin-left: var(--spacing-sm);
   padding: var(--spacing-xs) var(--spacing-sm);
@@ -518,6 +590,7 @@ a.button:hover {
 }
 
 /* FOOTER */
+/* Styles the site footer with background and padding. */
 footer {
   background-color: var(--bg-primary);
   color: var(--text-secondary);
@@ -527,6 +600,7 @@ footer {
   font-family: 'Quicksand', sans-serif;
 }
 
+/* Styles the brand name in the footer. */
 footer .footer-brand {
   font-weight: 700;
   font-size: 1rem;
@@ -534,12 +608,14 @@ footer .footer-brand {
   margin-bottom: 0.25rem;
 }
 
+/* Styles the tagline text in the footer. */
 footer .footer-tagline {
   font-size: 0.9rem;
   color: var(--text-secondary);
   margin-bottom: var(--spacing-lg);
 }
 
+/* Layouts the navigation links in the footer. */
 footer .footer-nav {
   display: flex;
   gap: var(--spacing-xl);
@@ -547,6 +623,7 @@ footer .footer-nav {
   margin-bottom: var(--spacing-lg);
 }
 
+/* Styles individual footer navigation links. */
 footer .footer-nav a {
   color: var(--text-secondary);
   text-decoration: none;
@@ -554,27 +631,32 @@ footer .footer-nav a {
   transition: color 0.2s ease;
 }
 
+/* Underlines footer links on hover. */
 footer .footer-nav a:hover {
   color: var(--text-primary);
   text-decoration: underline;
 }
 
+/* Styles the informational text in the footer. */
 footer .footer-info {
   font-size: 0.9rem;
   color: var(--text-secondary);
   margin-bottom: var(--spacing-lg);
 }
 
+/* Adds spacing between footer info items. */
 footer .footer-info span {
   margin: 0 var(--spacing-xs);
 }
 
+/* Styles the copyright text in the footer. */
 footer .footer-copy {
   font-size: 0.85rem;
   font-style: italic;
   color: var(--text-secondary);
 }
 
+/* Adjusts page offsets and footer for mobile devices. */
 @media (max-width: 768px) {
   :root {
     --page-top-offset: 90px;
@@ -599,34 +681,7 @@ footer .footer-copy {
 }
 
 
-
-
-
-
-@media (max-width: 768px) {
-  :root {
-    --page-top-offset: 90px;
-    /* Slightly more space on mobile */
-    --page-left-offset: 1rem;
-    /* Reduced left margin on mobile */
-    --page-right-offset: 1rem;
-    /* Reduced right margin on mobile */
-    --page-bottom-offset: 2rem;
-    /* Reduced bottom margin on mobile */
-  }
-
-  footer {
-    text-align: center;
-    padding: var(--spacing-xl) var(--page-left-offset);
-  }
-
-  footer .footer-nav {
-    justify-content: center;
-    gap: var(--spacing-md);
-  }
-}
-
-/* RESPONSIVE */
+/* Adjusts layout and font sizes for tablet devices. */
 @media (max-width: 992px) {
   :root {
     --page-top-offset: 95px;
@@ -675,6 +730,7 @@ footer .footer-copy {
   }
 }
 
+/* Further adjustments for mobile hero and product grid. */
 @media (max-width: 768px) {
   .heroSection {
     height: 60vh;
@@ -745,6 +801,7 @@ footer .footer-copy {
   }
 }
 
+/* Optimizes layout for small mobile screens. */
 @media (max-width: 480px) {
   :root {
     --page-top-offset: 85px;
@@ -792,6 +849,7 @@ footer .footer-copy {
 }
 
 /* CUSTOM BUTTONS FOR FLAVOR SECTIONS */
+/* Styles the dark button in the flavor section. */
 .flavor-section .btn-dark {
   display: inline-flex;
   align-items: center;
@@ -808,6 +866,7 @@ footer .footer-copy {
   cursor: pointer;
 }
 
+/* Darkens the flavor section button on hover. */
 .flavor-section .btn-dark:hover {
   background-color: #a30026 !important;
 }
@@ -815,6 +874,7 @@ footer .footer-copy {
 
 
 /* CENTER POPUP */
+/* Styles the background overlay for popups. */
 .popup-overlay {
   position: fixed;
   inset: 0;
@@ -826,6 +886,7 @@ footer .footer-copy {
   animation: fadeIn 0.2s ease;
 }
 
+/* Styles the popup container box. */
 .popup {
   background: var(--card-bg);
   padding: 1.75rem 2rem;
@@ -836,29 +897,34 @@ footer .footer-copy {
   animation: scaleIn 0.25s ease;
 }
 
+/* Styles the title within a popup. */
 .popup-title {
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
 }
 
+/* Layouts the action buttons in a popup. */
 .popup-actions {
   display: flex;
   justify-content: center;
   gap: 1rem;
 }
 
+/* Styles the cancel button in a popup. */
 .cancel-btn {
   background: var(--bg-secondary) !important;
   color: #333 !important;
 }
 
+/* Styles the confirm button in a popup. */
 .confirm-btn {
   background: #ed0a3f !important;
   color: white !important;
 }
 
 /* Animations */
+/* Defines the fade-in animation keyframes. */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -869,6 +935,7 @@ footer .footer-copy {
   }
 }
 
+/* Defines the scale-in animation keyframes. */
 @keyframes scaleIn {
   from {
     transform: scale(0.9);
@@ -882,6 +949,7 @@ footer .footer-copy {
 }
 
 /* CHECKOUT MODAL (CENTER POPUP VERSION) */
+/* Styles the background overlay for modals. */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -893,6 +961,7 @@ footer .footer-copy {
   animation: fadeIn 0.2s ease;
 }
 
+/* Styles the modal container box. */
 .modal-box {
   position: relative;
   background: var(--card-bg);
@@ -910,6 +979,7 @@ footer .footer-copy {
 }
 
 /* Scrollable content inside */
+/* Enables scrolling for modal content. */
 .modal-content-scroll {
   overflow-y: auto;
   padding-right: 5px;
@@ -918,6 +988,7 @@ footer .footer-copy {
 }
 
 /* Order item style */
+/* Styles individual order items in the modal. */
 .order-item {
   display: flex;
   align-items: center;
@@ -925,6 +996,7 @@ footer .footer-copy {
   margin-bottom: 0.75rem;
 }
 
+/* Styles the image within an order item. */
 .order-item img {
   width: 55px;
   height: 55px;
@@ -933,6 +1005,7 @@ footer .footer-copy {
 }
 
 /* Inputs */
+/* Styles input fields within the modal. */
 .modal-box input {
   width: 100%;
   padding: 0.6rem 0.75rem;
@@ -942,11 +1015,13 @@ footer .footer-copy {
   font-size: 0.9rem;
 }
 
+/* Removes outline on focus for modal inputs. */
 .modal-box input:focus {
   outline: none;
 }
 
 /* Footer */
+/* Styles the footer area of the modal. */
 .modal-footer {
   display: flex;
   justify-content: space-between;
@@ -956,6 +1031,7 @@ footer .footer-copy {
   border-top: 1px solid var(--border-color);
 }
 
+/* Styles the close button for the modal. */
 .close-modal {
   color: var(--text-primary);
   position: absolute;
@@ -968,12 +1044,16 @@ footer .footer-copy {
 }
 
 /* Responsive Adjustments */
+/* Adjusts modal styles for small screens. */
 @media (max-width: 500px) {
+
+  /* Styles the modal container box. */
   .modal-box {
     max-width: 95%;
     padding: 1.25rem 1rem;
   }
 
+  /* Styles the image within an order item. */
   .order-item img {
     width: 48px;
     height: 48px;
@@ -981,12 +1061,16 @@ footer .footer-copy {
   }
 }
 
+/* Adjusts modal height for very small screens. */
 @media (max-width: 380px) {
+
+  /* Styles the modal container box. */
   .modal-box {
     max-height: 90vh;
   }
 }
 
+/* Styles the product detail page layout. */
 .product-detail-page {
   margin-top: var(--page-top-offset);
   margin-left: var(--page-left-offset);
@@ -995,16 +1079,19 @@ footer .footer-copy {
   min-height: calc(100vh - var(--page-top-offset) - var(--page-bottom-offset));
 }
 
+/* Sets initial opacity for fading related items. */
 .fade-related {
   opacity: 0;
   transition: opacity 1s ease-in-out;
 }
 
+/* Applies fade-in effect to related items. */
 .fade-related.fade-in {
   opacity: 1;
 }
 
 /* ====== ABOUT PAGE WRAPPER — MATCHES OTHER PAGES ====== */
+/* Styles the about page layout wrapper. */
 .about-page {
   margin-top: var(--page-top-offset);
   margin-left: var(--page-left-offset);
@@ -1013,6 +1100,7 @@ footer .footer-copy {
   min-height: calc(100vh - var(--page-top-offset) - var(--page-bottom-offset));
 }
 
+/* Centers and pads the about page content. */
 .about-container {
   max-width: var(--container-max-width);
   margin: 0 auto;
@@ -1021,12 +1109,14 @@ footer .footer-copy {
 }
 
 /* ====== HERO (TITLE + SUBTEXT) ====== */
+/* Styles the main heading of the about page hero. */
 .about-hero h1 {
   font-size: 2.75rem;
   font-weight: 700;
   margin-bottom: var(--spacing-sm);
 }
 
+/* Styles the paragraph text in the about page hero. */
 .about-hero p {
   font-size: 1.05rem;
   color: var(--text-secondary);
@@ -1036,16 +1126,19 @@ footer .footer-copy {
 }
 
 /* ====== SECTION STYLES ====== */
+/* Adds margin to about page sections. */
 .about-section {
   margin-bottom: var(--spacing-2xl);
 }
 
+/* Styles section headings in the about page. */
 .about-section h2 {
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: var(--spacing-sm);
 }
 
+/* Styles paragraph text in about page sections. */
 .about-section p {
   font-size: 1rem;
   line-height: 1.7;
@@ -1053,17 +1146,20 @@ footer .footer-copy {
 }
 
 /* ====== TWO COLUMN (Mission / Vision) ====== */
+/* Creates a two-column layout for about content. */
 .about-two-col {
   display: flex;
   gap: var(--spacing-xl);
   margin-bottom: var(--spacing-2xl);
 }
 
+/* Ensures equal width for columns in the two-column layout. */
 .about-two-col div {
   flex: 1;
 }
 
 /* ====== IMAGE ====== */
+/* Styles images within the about page. */
 .about-image {
   width: 100%;
   max-width: 700px;
@@ -1072,6 +1168,7 @@ footer .footer-copy {
   margin-bottom: var(--spacing-sm);
 }
 
+/* Styles captions for about page images. */
 .image-caption {
   font-size: 0.85rem;
   font-style: italic;
@@ -1079,17 +1176,22 @@ footer .footer-copy {
 }
 
 /* ====== RESPONSIVE ====== */
+/* Stacks about page columns on mobile. */
 @media (max-width: 768px) {
+
+  /* Styles the main heading of the about page hero. */
   .about-hero h1 {
     font-size: 2rem;
   }
 
+  /* Creates a two-column layout for about content. */
   .about-two-col {
     flex-direction: column;
   }
 }
 
 /* Mobile Styles */
+/* Styles the mobile navigation menu and toggler. */
 @media (max-width: 992px) {
 
   /* ✅ Keep navbar fixed height (prevents logo from moving) */
@@ -1110,13 +1212,18 @@ footer .footer-copy {
     top: 70px;
     /* same height as navbar */
     right: 0;
-    background-color: var(--primary-color) !important;
+    background: #33333335 !important;
     padding: 20px;
     width: 250px;
     /* or auto */
-    border-radius: 8px;
+    border:none !important;
     text-align: right;
     z-index: 999;
+  }
+  
+
+  .navbar-collapse .nav-link.active{
+    border:none !important;
   }
 
   /* ✅ Mobile link colors */
@@ -1131,6 +1238,7 @@ footer .footer-copy {
   }
 }
 
+/* Layouts a row of content in the about page. */
 .about-row {
   display: flex;
   align-items: center;
@@ -1144,22 +1252,26 @@ footer .footer-copy {
   /* centers the whole row */
 }
 
+/* Reverses the order of items in an about row. */
 .about-row.reverse {
   flex-direction: row-reverse;
 }
 
+/* Styles the text area within an about row. */
 .about-text {
   flex: 1;
   text-align: center;
   /* optional — makes text centered */
 }
 
+/* Centers the image within an about row. */
 .about-image-wrapper {
   flex: 1;
   display: flex;
   justify-content: center;
 }
 
+/* Styles the side image in an about row. */
 .about-image-side {
   width: 100%;
   max-width: 380px;
@@ -1168,6 +1280,7 @@ footer .footer-copy {
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.1);
 }
 
+/* Styles the container for the IGIT section. */
 .igit-container {
   max-width: 1100px;
   margin: 0 auto;
@@ -1177,30 +1290,586 @@ footer .footer-copy {
 
 
 /* MOBILE (stack centered) */
+/* Stacks about rows on mobile devices. */
 @media (max-width: 768px) {
 
   .about-row,
+  /* Reverses the order of items in an about row. */
   .about-row.reverse {
     flex-direction: column;
     text-align: center;
   }
 
+  /* Styles the side image in an about row. */
   .about-image-side {
     max-width: 300px;
   }
 }
+
+/* Styles the logo image in the navbar. */
 .navbar-logo img {
-  height: 70px;
+  height: 50px;
   width: auto;
   object-fit: contain;
 }
 
+/* Adds hover border styles to navigation links. */
 .customNavbar .nav-link {
   border: 1px solid transparent;
   border-radius: 5px;
   transition: border-color 0.3s ease;
 }
 
-.customNavbar .nav-link:hover {
-  border-color: #000000;
+
+
+/* REFACTORED UTILITIES */
+/* Centered loading container with vertical padding */
+.loading-container {
+  text-align: center;
+  padding: 80px 0;
 }
+
+/* Max width for sort dropdown */
+.sort-select {
+  max-width: 200px;
+}
+
+/* Max width for search input */
+.search-input {
+  max-width: 300px;
+}
+
+/* Large font size for empty cart icon */
+.empty-cart-icon {
+  font-size: 4rem;
+}
+
+/* Cart item image styling */
+.cart-item-img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+/* REFACTORED INLINE STYLES */
+
+/* Utilities */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.min-vh-60 {
+  min-height: 60vh;
+}
+
+.object-fit-cover {
+  object-fit: cover;
+}
+
+/* Hero Backgrounds */
+.hero-bg-light {
+  background-image: url('http://localhost:8082/assets/cover-img.png');
+}
+
+.hero-bg-dark {
+  background-image: url('http://localhost:8082/assets/hero-dark.jpg');
+}
+
+/* Product Preview (Edit Product) */
+.product-preview-img {
+  max-height: 150px;
+  object-fit: contain;
+}
+
+/* Admin Dashboard */
+.admin-product-img-wrapper {
+  height: 250px;
+  overflow: hidden;
+}
+
+.admin-product-img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+/* Modals */
+.modal-form-register {
+  max-width: 600px;
+}
+
+.modal-form-login {
+  max-width: 500px;
+}
+
+/* Checkout */
+.checkout-product-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+}
+
+.product-link {
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+.product-link:hover {
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+.product-card .badge {
+  background: transparent !important;
+  color: inherit !important;  /* keeps normal text color */
+  padding: 0 !important;      /* remove badge padding if you want */
+  font-size: 0.9rem;            /* optional */
+  border: none !important;    /* remove rounded border look */
+  font-weight: lighter;
+  text-align: left !important;
+}
+
+/* Product name */
+.product-card .card-title {
+  font-size: 1rem !important;   /* adjust smaller or larger */
+  margin-bottom: 0.3rem;        /* optional: tighter spacing */
+}
+
+/* Product price */
+.product-card .card-price {
+  font-size: 0.9rem !important; /* adjust size here */
+  font-weight: 500;             /* optional: keep readable */
+}
+
+/* Smooth hide + show */
+.navbar-show {
+  transform: translateY(0);
+  transition: transform 0.3s ease-in-out;
+}
+
+.navbar-hide {
+  transform: translateY(-100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.related-img-wrapper {
+  height: 250px; /* customize the height */
+  overflow: hidden; /* hides anything that overflows */
+}
+
+.related-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* ensures image fills the wrapper */
+}
+
+.customNavbar .navbar-toggler {
+  border: none; /* remove default border */
+}
+
+.customNavbar .navbar-toggler:focus {
+  box-shadow: none;
+}
+
+.customNavbar .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgb%28237,10,63%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* Modal size and border radius */
+.custom-login-modal .modal-content {
+  width: 500px; /* Change width as needed */
+  max-width: 90%;
+  border-radius: 0 !important; /* Remove border radius */
+  padding: 0;
+  font-family: 'Arial', sans-serif; /* Customize font */
+}
+
+/* Modal body padding */
+.custom-modal-body {
+  position: relative;
+  padding: 2rem;
+}
+
+/* Close button top-right */
+.modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  color: #000;
+  text-decoration: none;
+  border: none;
+  background: none;
+}
+
+/* Title font size */
+.modal-title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* Form input font size */
+.login-form input {
+  font-size: 1rem;
+  border-radius: 0 !important;
+}
+
+/* Button custom style */
+.login-form button {
+  font-size: 1.1rem;
+  border-radius: 0 !important;
+  padding: 0.75rem 2rem;
+}
+
+/* Alert customization */
+.custom-alert {
+  font-size: 0.9rem;
+}
+
+/* Modal size and border radius */
+.custom-login-modal .modal-content {
+  width: 500px; /* Change as needed */
+  max-width: 90%;
+  border-radius: 0 !important; /* Remove border radius */
+  padding: 0;
+  font-family: 'Arial', sans-serif; /* Customize font */
+}
+
+/* Modal body padding */
+.custom-modal-body {
+  position: relative;
+  padding: 2rem;
+}
+
+/* Close button top-right */
+.modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  color: #000;
+  text-decoration: none;
+  border: none;
+  background: none;
+}
+
+/* Title font size */
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Role buttons */
+.role-btn {
+  font-size: 1.1rem;
+  border-radius: 0 !important;
+  padding: 0.75rem 2rem;
+}
+
+/* Register button */
+.register-btn {
+  font-size: 0.9rem;
+  border-radius: 0 !important;
+  padding: 0.5rem 1.5rem;
+}
+
+/* Modal size and border radius */
+.custom-login-modal .modal-content {
+  width: 600px; /* adjust as needed */
+  max-width: 95%;
+  border-radius: 0 !important;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Modal body padding */
+.custom-modal-body {
+  position: relative;
+  padding: 2rem;
+}
+
+/* Close button top-right */
+.modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  color: #000;
+  text-decoration: none;
+  border: none;
+  background: none;
+}
+
+/* Title font size */
+.modal-title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* Form section borders */
+.custom-form-section {
+  border-radius: 0 !important;
+  font-size: 1rem;
+}
+
+/* Form inputs */
+.modal-form-register input {
+  border-radius: 0 !important;
+  font-size: 1rem;
+}
+
+/* Buttons */
+.modal-form-register button {
+  font-size: 1.1rem;
+  border-radius: 0 !important;
+  padding: 0.75rem 2rem;
+}
+
+/* Modal size and border radius */
+.custom-login-modal .modal-content {
+  width: 600px;
+  max-width: 95%;
+  border-radius: 0 !important;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Modal body padding */
+.custom-modal-body {
+  position: relative;
+  padding: 2rem;
+}
+
+/* Close button top-right */
+.modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  color: #000;
+  text-decoration: none;
+  border: none;
+  background: none;
+}
+
+/* Modal title font size */
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Form inputs */
+.modal-body input,
+.modal-body textarea,
+.modal-body select {
+  border-radius: 0 !important;
+  font-size: 1rem;
+}
+
+/* Buttons */
+.modal-body button {
+  border-radius: 0 !important;
+  font-size: 1rem;
+  padding: 0.5rem 1.5rem;
+}
+
+/* Modal size and border radius */
+.custom-login-modal .modal-content {
+  width: 600px;
+  max-width: 95%;
+  border-radius: 0 !important;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Modal body padding */
+.custom-modal-body {
+  position: relative;
+  padding: 2rem;
+}
+
+/* Close button top-right */
+.modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  color: #000;
+  text-decoration: none;
+  border: none;
+  background: none;
+}
+
+/* Modal title font size */
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Form inputs */
+.modal-body input,
+.modal-body textarea,
+.modal-body select {
+  border-radius: 0 !important;
+  font-size: 1rem;
+}
+
+/* Buttons */
+.modal-body button {
+  border-radius: 0 !important;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+}
+
+/* Custom style for the logout button */
+.btn-outline-light.btn-sm {
+  font-size: 0.75rem; /* Smaller text size */
+  padding: 5px 12px; /* Smaller padding for a more compact button */
+}
+
+/* If you want to modify background hover effect as well */
+.btn-outline-light.btn-sm:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Slight background on hover */
+}
+
+
+/* Order History Page Styles */
+
+/* Card Styles */
+.card {
+    border: none; /* No borders */
+    box-shadow: none; /* No shadow */
+    margin-bottom: 1.5rem; /* Space between cards */
+}
+
+.card-header {
+    padding: 1rem 1.5rem;
+    background-color: #fff;
+    border-bottom: 1px solid #e3e3e3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-header .badge {
+    font-size: 0.875rem;
+}
+
+.card-body .table {
+    margin-bottom: 0;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+}
+
+table th,
+table td {
+    padding: 0.75rem;
+    text-align: left;
+    font-size: 0.875rem;
+}
+
+table th {
+    font-weight: 600;
+    color: #6c757d;
+}
+
+table td {
+    color: #495057;
+}
+
+table .text-end {
+    text-align: right;
+}
+
+table .fw-bold {
+    font-weight: 600;
+}
+
+table .text-primary {
+    color: #007bff;
+}
+
+table .small {
+    font-size: 0.875rem;
+}
+
+/* Button Styling */
+button,
+.nav-link {
+    font-size: 0.875rem;
+    padding: 0.375rem 1rem;
+}
+
+button {
+    border: 1px solid transparent;
+    background-color: transparent;
+    color: #007bff;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+button:hover {
+    background-color: #f8f9fa;
+    border-color: #007bff;
+}
+
+/* Badge Styling */
+.badge {
+    font-size: 0.875rem;
+}
+
+.badge.bg-success {
+    background-color: #28a745;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107;
+}
+
+/* Back Button */
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.page h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+/* Empty State */
+.text-center p {
+    color: #6c757d;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 576px) {
+    .card-header {
+        padding: 1rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    table th,
+    table td {
+        padding: 0.5rem;
+    }
+
+    .fw-bold {
+        font-weight: 600;
+    }
+}
+
+
+
+

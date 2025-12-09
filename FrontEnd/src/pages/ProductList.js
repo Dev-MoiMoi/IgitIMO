@@ -45,14 +45,14 @@ export default function ProductList() {
 
       <main className="container main">
         <div className="main-header d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
-          <BackButton to="/" label="Home" />
+          <BackButton to="/" label="" />
 
           <div className="d-flex gap-3 w-100 w-md-auto">
             <select
-              className="form-select"
+              className="form-select sort-select"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              style={{ maxWidth: '200px' }}
+            // Limits the width of the sort dropdown.
             >
               <option value="default">Sort by</option>
               <option value="price-asc">Price: Low to High</option>
@@ -61,25 +61,26 @@ export default function ProductList() {
 
             <input
               type="text"
-              className="form-control"
+              className="form-control search-input"
               placeholder="Search products..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ maxWidth: '300px' }}
+            // Limits the width of the search input.
             />
           </div>
         </div>
 
         {/* LOADING INDICATOR */}
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '80px 0' }}>
-            <p>Loading products...</p>
+          // Centers the loading text and adds vertical padding.
+          <div className="loading-container">
+            <p>Gathering the goods...</p>
           </div>
         ) : (
           <>
             {filteredList.length === 0 ? (
               <div className="text-center py-5">
-                <p className="text-muted">No products found.</p>
+                <p className="text-muted">Wait where did they go?</p>
               </div>
             ) : (
               <div className="product-grid">

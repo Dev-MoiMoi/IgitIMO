@@ -9,7 +9,6 @@ const AddProductModal = ({ show, onHide, onProductAdded }) => {
         description: '',
         price: '',
         quantity: '',
-        quantity: '',
         image: '',
         imageFile: null
     });
@@ -30,7 +29,6 @@ const AddProductModal = ({ show, onHide, onProductAdded }) => {
         setError('');
 
         try {
-            // Basic validation
             if (!formData.name || !formData.price || !formData.quantity) {
                 throw new Error("Please fill in all required fields.");
             }
@@ -45,14 +43,12 @@ const AddProductModal = ({ show, onHide, onProductAdded }) => {
             }
 
             await axios.post(`${API_BASE}/products`, payload, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                headers: { 'Content-Type': 'multipart/form-data' }
             });
 
-            onProductAdded(); // Refresh list
-            onHide(); // Close modal
-            setFormData({ name: '', description: '', price: '', quantity: '', image: '', imageFile: null }); // Reset form
+            onProductAdded();
+            onHide();
+            setFormData({ name: '', description: '', price: '', quantity: '', image: '', imageFile: null });
         } catch (err) {
             console.error(err);
             setError(err.response?.data?.message || err.message || 'Failed to add product');
@@ -62,12 +58,26 @@ const AddProductModal = ({ show, onHide, onProductAdded }) => {
     };
 
     return (
-        <Modal show={show} onHide={onHide} centered>
-            <Modal.Header closeButton>
-                <Modal.Title>Add New Product</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+        <Modal
+            show={show}
+            onHide={onHide}
+            centered
+            dialogClassName="custom-login-modal"
+        >
+            <Modal.Body className="custom-modal-body p-4">
+                {/* Close button top-right */}
+                <Button
+                    variant="link"
+                    className="modal-close-btn"
+                    onClick={onHide}
+                >
+                    ×
+                </Button>
+
+                <h4 className="modal-title mb-4 text-center">Add New Product</h4>
+
                 {error && <Alert variant="danger">{error}</Alert>}
+
                 <Form onSubmit={handleSubmit}>
                     <Form.Group className="mb-3">
                         <Form.Label>Product Name</Form.Label>

@@ -1,2 +1,2 @@
-const API_BASE = "http://localhost:8082/api";
+const API_BASE = "/api";
 export default API_BASE;

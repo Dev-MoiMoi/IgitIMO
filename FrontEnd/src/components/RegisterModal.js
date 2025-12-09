@@ -1,78 +1,193 @@
-import React from 'react';
-import { Modal, Button, Form, Container, Row, Col } from 'react-bootstrap';
-import { ArrowLeft } from 'lucide-react';
+import React, { useState } from 'react';
+import { Modal, Button, Form, Container } from 'react-bootstrap';
 
 const RegisterModal = ({ show, onRegister, onBack }) => {
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onRegister();
-    };
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    full_name: '',
+    phone_number: '',
+    region: '',
+    province: '',
+    city: '',
+    barangay: '',
+    postal_code: '',
+    street_building_house: '',
+    label: 'Home',
+    is_default: false
+  });
 
-    return (
-        <Modal show={show} centered backdrop="static" keyboard={false} size="lg">
-            <Modal.Body className="p-5">
-                <div className="mb-4">
-                    <Button
-                        variant="link"
-                        className="text-dark p-0 text-decoration-none fw-bold fs-5"
-                        onClick={onBack}
-                    >
-                        <ArrowLeft size={24} className="me-2" /> Back
-                    </Button>
-                </div>
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
 
-                <Container className="py-2">
-                    <h2 className="text-center mb-5 fw-bold">Register</h2>
+  const handleLabelChange = (label) => {
+    setFormData(prev => ({ ...prev, label }));
+  };
 
-                    <Form onSubmit={handleSubmit} className="mx-auto" style={{ maxWidth: '600px' }}>
-                        <div className="mb-4 p-3 border rounded-3">
-                            <Form.Group className="mb-3">
-                                <Form.Control type="text" placeholder="Username" />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Control type="password" placeholder="Password" />
-                            </Form.Group>
-                        </div>
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onRegister(formData);
+  };
 
-                        <div className="mb-4 p-3 border rounded-3">
-                            <Form.Group className="mb-3">
-                                <Form.Control type="text" placeholder="Full Name" />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Control type="text" placeholder="Phone Number" />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Control type="text" placeholder="Region, Province, City, Barangay" />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Control type="text" placeholder="Postal Code" />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Control type="text" placeholder="Street Name, Building, House No." />
-                            </Form.Group>
+  return (
+    <Modal
+      show={show}
+      centered
+      backdrop="static"
+      keyboard={false}
+      dialogClassName="custom-login-modal"
+    >
+      <Modal.Body className="custom-modal-body p-5">
+        {/* Close button top-right */}
+        <Button
+          variant="link"
+          className="modal-close-btn"
+          onClick={onBack}
+        >
+          ×
+        </Button>
 
-                            <Form.Group className="mb-3 d-flex align-items-center">
-                                <Form.Label className="mb-0 me-3">Set as default address</Form.Label>
-                                <Form.Check type="switch" id="custom-switch" />
-                            </Form.Group>
+        <Container className="py-2">
+          <h2 className="modal-title text-center mb-5 fw-bold">Register</h2>
 
-                            <Form.Group className="mb-3 d-flex align-items-center">
-                                <Form.Label className="mb-0 me-3">Label as:</Form.Label>
-                                <Button variant="outline-secondary" size="sm" className="me-2 rounded-pill px-3">Work</Button>
-                                <Button variant="outline-secondary" size="sm" className="rounded-pill px-3">Home</Button>
-                            </Form.Group>
-                        </div>
+          <Form onSubmit={handleSubmit} className="mx-auto modal-form-register">
+            <div className="mb-4 p-3 border custom-form-section">
+              <Form.Group className="mb-3">
+                <Form.Control 
+                  type="text" 
+                  placeholder="Username" 
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Control 
+                  type="email" 
+                  placeholder="Email Address" 
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Control 
+                  type="password" 
+                  placeholder="Password" 
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </div>
 
-                        <div className="text-center mt-4">
-                            <Button variant="dark" type="submit" size="lg" className="px-5 rounded-3">
-                                Register
-                            </Button>
-                        </div>
-                    </Form>
-                </Container>
-            </Modal.Body>
-        </Modal>
-    );
+            <div className="mb-4 p-3 border custom-form-section">
+              <Form.Group className="mb-3">
+                <Form.Control 
+                  type="text" 
+                  placeholder="Full Name" 
+                  name="full_name"
+                  value={formData.full_name}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Control 
+                  type="text" 
+                  placeholder="Phone Number" 
+                  name="phone_number"
+                  value={formData.phone_number}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Control 
+                  type="text" 
+                  placeholder="Region" 
+                  name="region"
+                  value={formData.region}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Control 
+                  type="text" 
+                  placeholder="Province" 
+                  name="province"
+                  value={formData.province}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Control 
+                  type="text" 
+                  placeholder="City" 
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Control 
+                  type="text" 
+                  placeholder="Barangay" 
+                  name="barangay"
+                  value={formData.barangay}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Control 
+                  type="text" 
+                  placeholder="Postal Code" 
+                  name="postal_code"
+                  value={formData.postal_code}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Control 
+                  type="text" 
+                  placeholder="Street Name, Building, House No." 
+                  name="street_building_house"
+                  value={formData.street_building_house}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3 d-flex align-items-center">
+                <Form.Label className="mb-0 me-3">Set as default address</Form.Label>
+                <Form.Check 
+                  type="switch" 
+                  id="custom-switch" 
+                  name="is_default"
+                  checked={formData.is_default}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+            </div>
+
+            <div className="text-center mt-4">
+              <Button variant="dark" type="submit" size="lg" className="px-5 rounded-3">
+                Register
+              </Button>
+            </div>
+          </Form>
+        </Container>
+      </Modal.Body>
+    </Modal>
+  );
 };
 
 export default RegisterModal;

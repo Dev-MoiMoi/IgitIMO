@@ -52,9 +52,10 @@ const OrderHistory = () => {
     return (
         <div className="page">
             <AppNavbar />
-            <Container className="py-5" style={{ minHeight: '60vh' }}>
+            {/* Ensures the container has a minimum height to push the footer down. */}
+            <Container className="py-5 min-vh-60">
                 <div className="mb-4">
-                    <BackButton to="/" label="Back to Home" />
+                    <BackButton to="/" label="" />
                     <h2 className="fw-bold mt-3">My Order History</h2>
                 </div>
 
@@ -122,7 +123,6 @@ const OrderHistory = () => {
                     </div>
                 )}
             </Container>
-            <Footer />
         </div>
     );
 };

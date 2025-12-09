@@ -37,9 +37,7 @@ const Home = () => {
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
 
-  const heroImage = theme === 'dark'
-    ? 'http://localhost:8082/assets/hero-dark.jpg'
-    : 'http://localhost:8082/assets/cover-img.png';
+
 
   return (
     <div className="homePage">
@@ -47,17 +45,15 @@ const Home = () => {
 
       {/* LOADING STATE */}
       {products.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '80px 0' }}>
-          <p>Loading products...</p>
+        // Centers the loading text and adds vertical padding.
+        <div className="loading-container">
+          <p>Preparing yummy cakes for you...</p>
         </div>
       ) : (
         <>
           {/* HERO SECTION */}
           <header
-            className="heroSection"
-            style={{
-              backgroundImage: `url('${heroImage}')`,
-            }}
+            className={`heroSection ${theme === 'dark' ? 'hero-bg-dark' : 'hero-bg-light'}`}
           >
             <div className="hero-overlay"></div>
             <div className="hero-content">
@@ -69,7 +65,7 @@ const Home = () => {
               </h1>
               <p>"home baked happiness"</p>
               <a href="/products" className="hero-btn">
-                Shop Cake
+                Start Shopping
               </a>
             </div>
           </header>
@@ -121,7 +117,7 @@ const Home = () => {
                     variant="dark"
                     className="rounded-0 px-3 py-2 w-auto"
                   >
-                    Shop Cake
+                    Start Shopping
                   </Button>
                 </Col>
               </Row>
@@ -131,7 +127,7 @@ const Home = () => {
           {/* PRODUCTS GRID */}
           <section className="py-5">
             <Container fluid className="px-5">
-              <h2 className="display-6 fw-bold mb-4">Cakes Cakes Cakes</h2>
+              <h2 className="display-6 fw-bold mb-4">Check these out!</h2>
               <Row className="g-4">
                 <Col lg={6}>
                   {products[2] && <ProductCard product={products[2]} />}

@@ -1,18 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Row, Col, Image } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
 
 const CheckoutModal = ({ show, onClose, items, onCheckoutComplete }) => {
-  const { isAuthenticated, setShowLoginModal } = useAuth();
+  const { isAuthenticated, setShowLoginModal, user } = useAuth();
   const [formData, setFormData] = useState({
     fullName: '',
     phoneNumber: '',
-    address: '',
+    region: '',
+    province: '',
+    city: '',
+    barangay: '',
     postalCode: '',
     street: '',
     isDefault: false,
     label: 'Home'
   });
+
+  useEffect(() => {
+    if (user) {
+      // The backend returns addresses as a nested array (user.addresses)
+      // We try to find the default one, or fall back to the first one
+      const userAddress = (user.addresses && user.addresses.length > 0)
+        ? (user.addresses.find(a => a.is_default) || user.addresses[0])
+        : {};
+
+      setFormData({
+        fullName: user.full_name || '',
+        phoneNumber: user.phone_number || '',
+        region: userAddress.region || '',
+        province: userAddress.province || '',
+        city: userAddress.city || '',
+        barangay: userAddress.barangay || '',
+        postalCode: userAddress.postal_code || '',
+        street: userAddress.street_building_house || '',
+        isDefault: userAddress.is_default || false,
+        label: userAddress.label || 'Home'
+      });
+    }
+  }, [user]);
 
   const total = items.reduce((acc, item) => acc + (Number(item.product?.price) || 0) * item.quantity, 0).toFixed(2);
 
@@ -32,7 +58,10 @@ const CheckoutModal = ({ show, onClose, items, onCheckoutComplete }) => {
       shippingAddress: {
         ...formData,
         full_name: formData.fullName,
-        phone_number: formData.phoneNumber
+        phone_number: formData.phoneNumber,
+        street_building_house: formData.street,
+        postal_code: formData.postalCode,
+        // Ensure backend receives snake_case if needed, though formData already has the split fields
       }
     });
   };
@@ -56,7 +85,8 @@ const CheckoutModal = ({ show, onClose, items, onCheckoutComplete }) => {
         <div className="mb-4">
           {items.map(item => (
             <div key={item.id} className="d-flex align-items-center mb-3 p-2 border rounded bg-light">
-              <Image src={item.product?.image} alt={item.product?.name} style={{ width: '60px', height: '60px', objectFit: 'cover' }} className="rounded me-3" />
+              <Image src={item.product?.image} alt={item.product?.name} className="rounded me-3 checkout-product-img" />
+              {/* Sets fixed dimensions and cover fit for the product thumbnail. */}
               <div>
                 <div className="fw-bold">{item.product?.name}</div>
                 <div className="text-muted small">₱{Number(item.product?.price || 0).toFixed(2)}</div>
@@ -89,10 +119,37 @@ const CheckoutModal = ({ show, onClose, items, onCheckoutComplete }) => {
           <Form.Group className="mb-3">
             <Form.Control
               type="text"
-              placeholder="Region, Province, City, Barangay"
+              placeholder="Region"
               className="bg-light border-light py-2"
-              value={formData.address}
-              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+              value={formData.region}
+              onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Control
+              type="text"
+              placeholder="Province"
+              className="bg-light border-light py-2"
+              value={formData.province}
+              onChange={(e) => setFormData({ ...formData, province: e.target.value })}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Control
+              type="text"
+              placeholder="City"
+              className="bg-light border-light py-2"
+              value={formData.city}
+              onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Control
+              type="text"
+              placeholder="Barangay"
+              className="bg-light border-light py-2"
+              value={formData.barangay}
+              onChange={(e) => setFormData({ ...formData, barangay: e.target.value })}
             />
           </Form.Group>
           <Form.Group className="mb-3">
@@ -125,25 +182,6 @@ const CheckoutModal = ({ show, onClose, items, onCheckoutComplete }) => {
             />
           </div>
 
-          <div className="d-flex align-items-center mb-4">
-            <span className="me-3 text-muted">Label as:</span>
-            <Button
-              variant={formData.label === 'Work' ? 'dark' : 'outline-secondary'}
-              size="sm"
-              className="me-2 rounded-pill px-3"
-              onClick={() => setFormData({ ...formData, label: 'Work' })}
-            >
-              Work
-            </Button>
-            <Button
-              variant={formData.label === 'Home' ? 'dark' : 'outline-secondary'}
-              size="sm"
-              className="rounded-pill px-3"
-              onClick={() => setFormData({ ...formData, label: 'Home' })}
-            >
-              Home
-            </Button>
-          </div>
 
           <div className="d-flex justify-content-between align-items-center mt-5">
             <div className="fs-5 fw-bold">Total <span className="ms-2">{total}</span></div>

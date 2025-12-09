@@ -45,11 +45,15 @@ export const CartProvider = ({ children }) => {
   const addItem = async (product, qty = 1) => {
     if (user) {
       try {
-        const res = await axios.post(`${API_BASE}/cart/add`, {
+        console.log("CartContext: Current User:", user);
+        const payload = {
           user_id: user.id,
           product_id: product.id,
           quantity: qty
-        });
+        };
+        console.log("CartContext: Sending payload:", payload);
+
+        const res = await axios.post(`${API_BASE}/cart/add`, payload);
 
         const newItem = res.data;
 
@@ -64,9 +68,14 @@ export const CartProvider = ({ children }) => {
           return [...prev, newItem];
         });
         // alert("Item added to cart!"); // Optional feedback
+        console.log("CartContext: Item added successfully");
+        return true;
       } catch (err) {
-        console.error("Failed to add item to cart:", err);
-        alert("Failed to add item to cart. Please try again.");
+        console.error("CartContext: Failed to add item to cart:", err);
+        const msg = err.response?.data?.message || err.message || "Failed to add item to cart. Please try again.";
+        const detail = err.response?.data?.error ? `\nDetails: ${err.response.data.error}` : "";
+        alert(`Error: ${msg}${detail}`);
+        return false;
       }
     } else {
       setItems(prev => {
