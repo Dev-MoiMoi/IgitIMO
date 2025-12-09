@@ -25,21 +25,38 @@ class CartController extends Controller
 
     public function add(Request $request)
     {
-        $item = Cart::where('user_id', $request->user_id)
-            ->where('product_id', $request->product_id)
-            ->first();
+        \Illuminate\Support\Facades\Log::info("Cart add request:", $request->all());
 
-        if ($item) {
-            $item->quantity += $request->quantity;
-            $item->save();
-        } else {
-            $item = Cart::create($request->all());
-        }
+        try {
+            $request->validate([
+                'user_id' => 'required|exists:users,id',
+                'product_id' => 'required|exists:products,id',
+                'quantity' => 'integer|min:1'
+            ]);
 
-        if ($item->product) {
-            $item->product = new ProductResource($item->product);
+            $item = Cart::where('user_id', $request->user_id)
+                ->where('product_id', $request->product_id)
+                ->first();
+
+            if ($item) {
+                $item->quantity += $request->quantity;
+                $item->save();
+            } else {
+                $item = Cart::create($request->all());
+            }
+
+            if ($item->product) {
+                $item->product = new ProductResource($item->product);
+            }
+            return response()->json($item, 201);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Illuminate\Support\Facades\Log::error("Validation failed:", $e->errors());
+            return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 422);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Cart add failed: " . $e->getMessage());
+            return response()->json(['message' => 'Failed to add to cart', 'error' => $e->getMessage()], 500);
         }
-        return response()->json($item, 201);
     }
 
     public function updateQuantity(Request $request, $id)
